@@ -5,13 +5,14 @@ import cors from 'cors';
 import { Server } from 'socket.io';
 
 dotenv.config();
-
 const app = express();
+app.use(cors())
+
 const server = http.createServer(app); // create an HTTP server using express app
 const io = new Server(server, {
   cors: {
-    // origin: "http://localhost:3003",
-    origin: "*",
+    origin: "http://localhost:3000",
+    // origin: "*",
     methods: ["GET", "POST"]
   }
 });
@@ -23,7 +24,7 @@ io.on('connection', (socket) => {
 
   socket.on('message', (data) => {
     console.log(data);
-    io.emit('message', `${socket.id.substring(0, 5)}: ${data}`);
+    socket.broadcast.emit('message', `${socket.id.substring(0, 5)}: ${data}`);
   });
 
   socket.on('disconnect', () => {
@@ -31,7 +32,7 @@ io.on('connection', (socket) => {
   });
 });
 
-io.listen(7778);
+io.listen(7779);
 // server.listen(PORT, () => {
 //   console.log("Server is listening on port:", PORT);
 // });
